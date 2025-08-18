@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html><body>
+<h2>Seller Dashboard</h2>
+<form method="POST" enctype="multipart/form-data">
+  Photo: <input type="file" name="photo"><br>
+  Age: <input type="text" name="age"><br>
+  Gender: <input type="text" name="gender"><br>
+  Price: <input type="number" name="price"><br>
+  <input type="submit" value="Post Cat">
+</form>
+
+<h3>Your Cats</h3>
+<ul>
+{% for cat in cats %}
+  <li>
+    <img src="{{ url_for('static', filename='uploads/' + cat['photo']) }}" width="100">
+    {{ cat['age'] }} | {{ cat['gender'] }} | ${{ cat['price'] }}
+    <a href="{{ url_for('delete_cat', cat_id=cat['id']) }}">Delete</a>
+  </li>
+{% endfor %}
+</ul>
+<a href="{{ url_for('logout') }}">Logout</a>
+</body></html>

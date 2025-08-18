@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html><body>
+<h2>Sign up as {{ role }}</h2>
+<form method="POST">
+  Username: <input type="text" name="username"><br>
+  Email: <input type="text" name="email"><br>
+  Password: <input type="password" name="password"><br>
+  <input type="submit" value="Sign up">
+</form>
+<a href="{{ url_for('login') }}">Back to login</a>
+</body></html>
