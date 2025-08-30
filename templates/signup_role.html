@@ -1,6 +1,67 @@
 <!DOCTYPE html>
-<html><body>
-<h2>Choose Role</h2>
-<a href="{{ url_for('signup', role='buyer') }}">Buyer</a><br>
-<a href="{{ url_for('signup', role='seller') }}">Seller</a>
-</body></html>
+<html>
+<head>
+    <title>Signup - Choose Role</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        h2 {
+            margin-bottom: 25px;
+        }
+        .role-btn {
+            display: block;
+            width: 200px;
+            margin: 15px auto;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #3498db;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        .role-btn:hover {
+            background-color: #2980b9;
+        }
+        a {
+            display: block;
+            margin-top: 20px;
+            color: #3498db;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Create Your Account</h2>
+        <p>Choose your role:</p>
+
+        <a href="{{ url_for('signup', role='buyer') }}">
+            <button class="role-btn">Buyer</button>
+        </a>
+        <a href="{{ url_for('signup', role='seller') }}">
+            <button class="role-btn">Seller</button>
+        </a>
+
+        <a href="{{ url_for('login') }}">Already have an account? Login</a>
+    </div>
+</body>
+</html>

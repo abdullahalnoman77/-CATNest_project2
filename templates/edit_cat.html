@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Cat Post</title>
+</head>
+<body>
+<h2>Edit Cat Post</h2>
+
+<form method="POST" enctype="multipart/form-data">
+    <p>
+        Current Photo: <br>
+        <img src="{{ url_for('static', filename='uploads/' + cat['photo']) }}" width="150" alt="Cat Photo">
+    </p>
+    <p>
+        Upload New Photo: <input type="file" name="photo">
+    </p>
+    <p>
+        Breed: <input type="text" name="breed" value="{{ cat['breed'] }}" required>
+    </p>
+    <p>
+        Age: <input type="text" name="age" value="{{ cat['age'] }}" required>
+    </p>
+    <p>
+        Gender: <input type="text" name="gender" value="{{ cat['gender'] }}" required>
+    </p>
+    <p>
+        Price: <input type="number" name="price" value="{{ cat['price'] }}" required>
+    </p>
+    <p>
+        <input type="submit" value="Update Cat">
+    </p>
+</form>
+
+<a href="{{ url_for('seller_dashboard') }}">Back to Dashboard</a>
+</body>
+</html>

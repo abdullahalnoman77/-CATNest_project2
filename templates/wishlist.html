@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Your Wishlist</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 900px; margin: auto; }
+        .cat-post { border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; border-radius: 10px; }
+        .cat-header { display: flex; align-items: center; gap: 15px; }
+        .cat-photo { width: 120px; height: 120px; object-fit: cover; border-radius: 10px; }
+        .cat-info { font-size: 14px; }
+        button { padding: 5px 10px; margin-top: 5px; }
+        hr { margin: 20px 0; border: 0.5px solid #ccc; }
+    </style>
+</head>
+<body>
+<h2>Your Wishlist</h2>
+
+{% if cats %}
+    {% for cat in cats %}
+    <div class="cat-post">
+        <div class="cat-header">
+            <img src="{{ url_for('static', filename='uploads/' + cat['photo']) }}" class="cat-photo">
+            <div class="cat-info">
+                <p><strong>Breed:</strong> {{ cat['breed'] }} | <strong>Age:</strong> {{ cat['age'] }} | <strong>Gender:</strong> {{ cat['gender'] }} | <strong>Price:</strong> ${{ cat['price'] }}</p>
+                <p><strong>Seller:</strong> {{ cat['seller_name'] }}</p>
+                <p><strong>Loves:</strong> {{ cat['love_count'] if 'love_count' in cat else 0 }}</p>
+            </div>
+        </div>
+    </div>
+    <hr>
+    {% endfor %}
+{% else %}
+    <p>You have no cats in your wishlist.</p>
+{% endif %}
+
+<a href="{{ url_for('buyer_dashboard') }}">Back to Dashboard</a> | 
+<a href="{{ url_for('logout') }}">Logout</a>
+</body>
+</html>

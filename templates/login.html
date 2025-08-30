@@ -1,13 +1,117 @@
 <!DOCTYPE html>
-<html>
-<head><title>Login</title></head>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login</title>
+  <style>
+    :root{
+      --page-bg: #fdf6ec; /* soft beige background */
+    }
+    body{
+      margin:0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--page-bg);
+      height:100vh;
+      overflow:hidden;
+    }
+
+    .stage{
+      position:relative;
+      height:100vh;
+      width:100%;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+    }
+
+    /* Quote block (slightly higher now) */
+    .quote{
+      position:absolute;
+      left:50px;
+      bottom:250px; /* was 200, now a bit higher */
+      max-width:370px;
+      font-size:20px;
+      line-height:1.4;
+      font-style:italic;
+      color:#333;
+      background: rgba(255,255,255,0.88);
+      padding:14px 18px;
+      border-radius:10px;
+      box-shadow:0 3px 10px rgba(0,0,0,.15);
+      z-index:3;
+    }
+    .quote b{ font-style:normal; }
+
+    /* Login card */
+    .login-card{
+      z-index:4;
+      background:#fff;
+      padding:30px 26px;
+      width:340px;
+      border-radius:12px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.2);
+      text-align:center;
+    }
+    .login-card h2{ margin:0 0 18px; color:#333; }
+
+    .login-card input{
+      width:100%;
+      padding:10px;
+      margin:10px 0;
+      border:1px solid #ddd;
+      border-radius:8px;
+      outline:none;
+      font-size:14px;
+    }
+
+    .login-card button{
+      width:100%;
+      padding:11px;
+      margin-top:8px;
+      background:#ff9900;
+      border:none;
+      border-radius:8px;
+      color:#fff;
+      font-size:16px;
+      cursor:pointer;
+    }
+    .login-card button:hover{ background:#ff8a00; }
+    .login-card .signup{
+      margin-top:12px; font-size:14px;
+    }
+    .login-card .signup a{ color:#6a0dad; text-decoration:none; }
+    .login-card .signup a:hover{ text-decoration:underline; }
+
+    /* Responsive tweaks */
+    @media (max-width: 780px){
+      .quote{ left:20px; bottom:60px; font-size:16px; max-width:300px; }
+    }
+  </style>
+</head>
 <body>
-<h2>Login</h2>
-<form method="POST">
-  Email: <input type="text" name="email"><br>
-  Password: <input type="password" name="password"><br>
-  <input type="submit" value="Login">
-</form>
-<a href="{{ url_for('signup_role') }}">Sign up here</a>
+
+  <div class="stage">
+    <!-- Left Quote -->
+    <div class="quote">
+      “Cats leave pawprints on your heart,<br>
+      not just on your furniture.”<br>
+      — <b>Noman</b>
+    </div>
+
+    <!-- Center Login -->
+    <div class="login-card">
+      <h2>Login</h2>
+      <form method="POST" action="{{ url_for('login') }}">
+        <input type="text" name="email" placeholder="Enter email" required />
+        <input type="password" name="password" placeholder="Enter password" required />
+        <button type="submit">Login</button>
+      </form>
+      <div class="signup">
+        Don’t have an account? <a href="{{ url_for('signup_role') }}">Sign Up</a>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>

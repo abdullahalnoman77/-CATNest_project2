@@ -1,23 +1,127 @@
 <!DOCTYPE html>
-<html><body>
-<h2>Seller Dashboard</h2>
-<form method="POST" enctype="multipart/form-data">
-  Photo: <input type="file" name="photo"><br>
-  Age: <input type="text" name="age"><br>
-  Gender: <input type="text" name="gender"><br>
-  Price: <input type="number" name="price"><br>
-  <input type="submit" value="Post Cat">
-</form>
+<html>
+<head>
+    <title>Seller Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .top-links {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .top-links a {
+            margin: 0 10px;
+            color: #3498db;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .top-links a:hover {
+            text-decoration: underline;
+        }
+        .cat-post {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .cat-header {
+            display: flex;
+            gap: 15px;
+        }
+        .cat-photo {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        .cat-info p {
+            margin: 5px 0;
+        }
+        .actions {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+        }
+        input[type=text], input[type=number], select {
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            padding: 5px 10px;
+            border-radius: 5px;
+            border: none;
+            background-color: #3498db;
+            color: #fff;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        form.add-cat-form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Seller Dashboard</h2>
 
-<h3>Your Cats</h3>
-<ul>
-{% for cat in cats %}
-  <li>
-    <img src="{{ url_for('static', filename='uploads/' + cat['photo']) }}" width="100">
-    {{ cat['age'] }} | {{ cat['gender'] }} | ${{ cat['price'] }}
-    <a href="{{ url_for('delete_cat', cat_id=cat['id']) }}">Delete</a>
-  </li>
-{% endfor %}
-</ul>
-<a href="{{ url_for('logout') }}">Logout</a>
-</body></html>
+    <div class="top-links">
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+
+    <!-- Add Cat Form -->
+    <form method="POST" class="add-cat-form" enctype="multipart/form-data">
+        <h3>Add a New Cat</h3>
+        <input type="file" name="photo" required><br><br>
+        <input type="text" name="breed" placeholder="Breed" required>
+        <input type="number" name="age" placeholder="Age" required>
+        <input type="text" name="gender" placeholder="Gender" required>
+        <input type="number" name="price" placeholder="Price" required><br><br>
+        <button type="submit">Add Cat</button>
+    </form>
+
+    <!-- Existing Cats -->
+    {% if cats %}
+        {% for cat in cats %}
+            <div class="cat-post">
+                <div class="cat-header">
+                    <img src="{{ url_for('static', filename='uploads/' + cat['photo']) }}" class="cat-photo">
+                    <div class="cat-info">
+                        <p><strong>Breed:</strong> {{ cat['breed'] }}</p>
+                        <p><strong>Age:</strong> {{ cat['age'] }} | <strong>Gender:</strong> {{ cat['gender'] }}</p>
+                        <p><strong>Price:</strong> ${{ cat['price'] }}</p>
+                        <p><strong>Loves:</strong> {{ cat['love_count'] }}</p>
+                    </div>
+                </div>
+                <div class="actions">
+                    <a href="{{ url_for('edit_cat', cat_id=cat['id']) }}"><button>Edit</button></a>
+                    <a href="{{ url_for('delete_cat', cat_id=cat['id']) }}"><button>Delete</button></a>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No cats posted yet.</p>
+    {% endif %}
+</div>
+</body>
+</html>

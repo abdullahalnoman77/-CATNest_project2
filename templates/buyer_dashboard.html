@@ -1,25 +1,178 @@
 <!DOCTYPE html>
-<html><body>
-<h2>Buyer Dashboard</h2>
-<a href="{{ url_for('buyer_dashboard', sort='price') }}">Sort by Price (Low to High)</a>
-<ul>
-{% for cat in cats %}
-  <li>
-    <img src="{{ url_for('static', filename='uploads/' + cat['photo']) }}" width="100">
-    {{ cat['age'] }} | {{ cat['gender'] }} | ${{ cat['price'] }} | Seller: {{ cat['seller_name'] }}
-    <form method="POST" action="{{ url_for('comment', cat_id=cat['id']) }}">
-      Comment: <input type="text" name="comment">
-      Rating: <select name="rating">
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-      </select>
-      <input type="submit" value="Submit">
-    </form>
-  </li>
-{% endfor %}
-</ul>
-<a href="{{ url_for('logout') }}">Logout</a>
-</body></html>
+<html>
+<head>
+    <title>Buyer Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .controls form, .controls a {
+            margin-bottom: 10px;
+        }
+        input[type=text] {
+            padding: 8px;
+            font-size: 14px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button, a.button-link {
+            padding: 8px 15px;
+            font-size: 14px;
+            border-radius: 5px;
+            border: none;
+            background-color: #3498db;
+            color: #fff;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        button:hover, a.button-link:hover {
+            background-color: #2980b9;
+        }
+        .cat-post {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .cat-header {
+            display: flex;
+            gap: 15px;
+        }
+        .cat-photo {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        .cat-info p {
+            margin: 5px 0;
+        }
+        .actions {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .comments {
+            margin-top: 15px;
+            padding-left: 10px;
+        }
+        .comment-item {
+            margin-bottom: 5px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 3px;
+        }
+        input.comment-input {
+            padding: 5px;
+            width: 60%;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        hr {
+            border: 0.5px solid #ccc;
+            margin: 20px 0;
+        }
+        .top-links {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .top-links a {
+            margin: 0 10px;
+            color: #3498db;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .top-links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Buyer Dashboard</h2>
+
+    <div class="top-links">
+        <a href="{{ url_for('wishlist') }}">My Wishlist</a> |
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+
+    <div class="controls">
+        <form method="GET" action="{{ url_for('buyer_dashboard') }}">
+            <input type="text" name="breed" placeholder="Search by breed"
+                   value="{{ request.args.get('breed', '') }}">
+            <button type="submit">Search</button>
+        </form>
+        <a class="button-link" href="{{ url_for('buyer_dashboard', sort='price', breed=request.args.get('breed')) }}">Sort by Price</a>
+    </div>
+
+    {% if cats %}
+        {% for cat in cats %}
+            <div class="cat-post">
+                <div class="cat-header">
+                    <img src="{{ url_for('static', filename='uploads/' + cat['photo']) }}" class="cat-photo">
+                    <div class="cat-info">
+                        <p><strong>Breed:</strong> {{ cat['breed'] }}</p>
+                        <p><strong>Age:</strong> {{ cat['age'] }} | <strong>Gender:</strong> {{ cat['gender'] }}</p>
+                        <p><strong>Price:</strong> ${{ cat['price'] }}</p>
+                        <p><strong>Seller:</strong> {{ cat['seller_name'] }}</p>
+                        <p><strong>Loves:</strong> {{ cat['love_count'] if 'love_count' in cat else 0 }}</p>
+                    </div>
+                </div>
+                <div class="actions">
+                    <form method="POST" action="{{ url_for('love_cat', cat_id=cat['id']) }}">
+                        <button type="submit">❤️ Love</button>
+                    </form>
+                    <form method="POST" action="{{ url_for('add_to_wishlist', cat_id=cat['id']) }}">
+                        <button type="submit">Add to Wishlist</button>
+                    </form>
+                    <form method="POST" action="{{ url_for('rate_cat', cat_id=cat['id']) }}">
+                        <label>Your Rating:</label>
+                        <select name="rating">
+                            {% for i in range(1,6) %}
+                                <option value="{{ i }}" {% if cat['my_rating'] == i %}selected{% endif %}>{{ i }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit">Rate</button>
+                    </form>
+                </div>
+                <div class="comments">
+                    <h4>Comments:</h4>
+                    {% if comments_by_cat.get(cat['id']) %}
+                        {% for c in comments_by_cat.get(cat['id'], []) %}
+                            <div class="comment-item"><strong>{{ c['username'] }}:</strong> {{ c['comment'] }}</div>
+                        {% endfor %}
+                    {% else %}
+                        <p>No comments yet.</p>
+                    {% endif %}
+                    <form method="POST" action="{{ url_for('comment', cat_id=cat['id']) }}">
+                        <input type="text" name="comment" class="comment-input" placeholder="Add a comment..." required>
+                        <button type="submit">Submit</button>
+                    </form>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No cats found.</p>
+    {% endif %}
+</div>
+</body>
+</html>
